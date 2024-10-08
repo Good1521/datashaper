@@ -331,6 +331,7 @@ class Workflow(Generic[Context]):
 
     async def run(
         self,
+        download_task,
         context: Context | None = None,
         callbacks: WorkflowCallbacks | None = None,
     ) -> WorkflowRunResult:
@@ -364,6 +365,11 @@ class Workflow(Generic[Context]):
         verb_idx = 0
         verb_timings: list[VerbTiming] = []
         while len(nodes) > 0:
+
+            if download_task.is_stop:
+                # print("---------verb_is_stop----------",download_task.is_stop)
+                break
+
             current_id = nodes.pop(0)
             node = self._graph[current_id]
             timing = await self._execute_verb(node, context, callbacks)
@@ -377,7 +383,7 @@ class Workflow(Generic[Context]):
             )
 
             # move to the next verb
-            visited.add(current_id)
+            # visited.add(current_id)
             enqueue_available_nodes(self._dependency_graph[current_id])
             verb_idx += 1
 
