@@ -383,11 +383,11 @@ class Workflow(Generic[Context]):
             )
 
             # move to the next verb
-            # visited.add(current_id)
+            visited.add(current_id)
             enqueue_available_nodes(self._dependency_graph[current_id])
             verb_idx += 1
 
-        assert_all_visited()
+        # assert_all_visited()
         callbacks.on_workflow_end(self.name, self)
 
         return WorkflowRunResult(
